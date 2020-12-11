@@ -53,8 +53,16 @@ int make_fs(char *disk_name){
     return 0;
 }
 
-int mount_fs(char *disk_name)
-{
+int mount_fs(char *disk_name){
+    /*
+        Description:
+            1. Read super block
+            2. Read directory info
+            3. Clear file descriptors
+        Input:
+            disk_name: name of the file system (same as the disk name)
+
+    */
     if(disk_name == NULL) return -1;
     open_disk(disk_name);
 
@@ -67,8 +75,8 @@ int mount_fs(char *disk_name)
     /* read directory info */
     dir_info = (file_info*)malloc(BLOCK_SIZE);
     memset(buf, 0, BLOCK_SIZE);
-    block_read(super_block_ptr->dir_index, buf);
-    memcpy(dir_info, buf, sizeof(file_info) * super_block_ptr->dir_len);
+    block_read(super_block_ptr->dir_index, buf); /* read the block that is stored in the super block as dir_index */
+    memcpy(dir_info, buf, sizeof(file_info) * super_block_ptr->dir_len); //********
 
     /* clear file descriptors */
     int i;
@@ -80,8 +88,7 @@ int mount_fs(char *disk_name)
     return 0;
 }
 
-int umount_fs(char *disk_name)
-{
+int umount_fs(char *disk_name){
     if(disk_name == NULL) return -1;
 
     /* write directory info */
@@ -115,8 +122,10 @@ int umount_fs(char *disk_name)
     return 0;
 }
 
-int fs_open(char *name)
-{
+int fs_open(char *name){
+    /*
+        Description: Allocate a file descriptor
+    */
     char file_index = find_file(name);
     if(file_index < 0) {  // file not found
         fprintf(stderr, "fs_open()\t error: file [%s] does not exist.\n",name);
@@ -464,6 +473,10 @@ char find_file(char* name)
 
 int find_free_file_des(char file_index)
 {
+
+    /*
+        Description: Returns the first file descriptor that is not being used
+    */
     int i;
 
     for(i = 0; i < MAX_FILE_DESCRIPTOR; i++) {

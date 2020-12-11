@@ -1,14 +1,13 @@
 /*
     References: https://github.com/Luminoid/Simple-File-System
-    Based on: Ethan Lee project - CS170: Simple File System
 */
 
 #ifndef FILE_SYSTEM_H
 #define FILE_SYSTEM_H
 
 #define MAX_FILENAME_LEN 15
-#define MAX_FILE_DESCRIPTOR 32
-#define MAX_FILE 64
+#define MAX_FILE_DESCRIPTOR 32 // Maximum numer of file descriptors
+#define MAX_FILE 64 // Maximum number of files of the file system
 
 typedef enum { false, true } bool;
 
