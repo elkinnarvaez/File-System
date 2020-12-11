@@ -6,8 +6,6 @@
 
 #include "disk.h"
 
-/* Hola */
-
 /******************************************************************************/
 static int active = 0;  /* is the virtual disk open (active) */
 static int handle;      /* file handle to virtual disk       */
