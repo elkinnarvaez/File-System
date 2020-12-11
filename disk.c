@@ -8,11 +8,10 @@
 
 /******************************************************************************/
 static int active = 0;  /* is the virtual disk open (active) */
-static int handle;      /* file handle to virtual disk       */
+static int handle;      /* file handle to virtual disk */
 
 /******************************************************************************/
-int make_disk(char *name)
-{ 
+int make_disk(char *name){ 
   int f, cnt;
   char buf[BLOCK_SIZE];
 
@@ -49,7 +48,7 @@ int open_disk(char *name)
     return -1;
   }
   
-  if ((f = open(name, O_RDWR, 0644)) < 0) {
+  if ((f = open(name, O_RDWR, 0644)) < 0) { /* File descriptor is stored in f */
     perror("open_disk: cannot open file");
     return -1;
   }
@@ -86,7 +85,7 @@ int block_write(int block, char *buf)
     return -1;
   }
 
-  if (lseek(handle, block * BLOCK_SIZE, SEEK_SET) < 0) {
+  if (lseek(handle, block * BLOCK_SIZE, SEEK_SET) < 0) { /* lseek is a system call that is used to change the location of the read/write pointer of a file descriptor. */
     perror("block_write: failed to lseek");
     return -1;
   }
