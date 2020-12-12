@@ -124,7 +124,8 @@ int umount_fs(char *disk_name){
 
 int fs_open(char *name){
     /*
-        Description: Allocate a file descriptor
+        Description:
+            1. Allocate a file descriptor
     */
     char file_index = find_file(name);
     if(file_index < 0) {  // file not found
@@ -143,8 +144,11 @@ int fs_open(char *name){
     return fd;
 }
 
-int fs_close(int fildes)
-{
+int fs_close(int fildes){
+    /*
+        Description:
+            1. Free the allocated file descriptor
+    */
     if(fildes < 0 || fildes >= MAX_FILE_DESCRIPTOR || !fd_table[fildes].used) {
         return -1;
     }
@@ -158,8 +162,11 @@ int fs_close(int fildes)
     return 0;
 }
 
-int fs_create(char *name)
-{
+int fs_create(char *name){
+    /*
+        Description:
+            1. Initialize file information
+    */
     char file_index = find_file(name);
 
     if (file_index < 0){  // Create file
@@ -186,8 +193,12 @@ int fs_create(char *name)
     }
 }
 
-int fs_delete(char *name)
-{
+int fs_delete(char *name){
+    /*
+        Description:
+            1. Remove file information
+            2. Free file blocks
+    */
     char i;
 
     for(i = 0; i < MAX_FILE; ++i) {
@@ -238,8 +249,7 @@ int fs_delete(char *name)
     return -1;
 }
 
-int fs_read(int fildes, void *buf, size_t nbyte)
-{
+int fs_read(int fildes, void *buf, size_t nbyte){
     if(nbyte <= 0 || !fd_table[fildes].used) {
         return -1;
     }
@@ -291,8 +301,7 @@ int fs_read(int fildes, void *buf, size_t nbyte)
     return read_count;
 }
 
-int fs_write(int fildes, void *buf, size_t nbyte)
-{
+int fs_write(int fildes, void *buf, size_t nbyte){
     if(nbyte <= 0 || !fd_table[fildes].used) {
         return -1;
     }
@@ -541,8 +550,7 @@ int find_next_block(int current, char file_index){
     return -1; // no next block
 }
 
-int main()
-{
+int main(){
     int i;
     char* disk_name = "RootDir";
     if(make_fs(disk_name) < 0) {
