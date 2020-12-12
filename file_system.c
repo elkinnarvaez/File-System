@@ -89,6 +89,11 @@ int mount_fs(char *disk_name){
 }
 
 int umount_fs(char *disk_name){
+    /*
+        Description:
+            1. Write directory info
+            2. Clear file descriptors
+    */
     if(disk_name == NULL) return -1;
 
     /* write directory info */
