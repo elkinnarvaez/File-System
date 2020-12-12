@@ -231,7 +231,7 @@ int fs_delete(char *name){
             block_read(super_block_ptr->data_index, buf1);
             block_read(super_block_ptr->data_index + 1, buf2);
             while (block_count > 0){
-                if (block_index < BLOCK_SIZE){
+                if (block_index < BLOCK_SIZE){ /* DISK_BLOCKS INSTEAD OF BLOCK_SIZE */
                     buf1[block_index] = '\0';
                 } else {
                     buf2[block_index - BLOCK_SIZE] = '\0';
@@ -255,6 +255,12 @@ int fs_delete(char *name){
 }
 
 int fs_read(int fildes, void *buf, size_t nbyte){
+    /*
+        Description:
+            1. Load current block
+            2. Read current block
+            3. Read the following blocks
+    */
     if(nbyte <= 0 || !fd_table[fildes].used) {
         return -1;
     }
@@ -307,6 +313,13 @@ int fs_read(int fildes, void *buf, size_t nbyte){
 }
 
 int fs_write(int fildes, void *buf, size_t nbyte){
+    /*
+        Description:
+            1. Load current block
+            2. Write current block
+            3. Write the allocated blocks
+            4. Write into new blocks
+    */
     if(nbyte <= 0 || !fd_table[fildes].used) {
         return -1;
     }
@@ -337,7 +350,7 @@ int fs_write(int fildes, void *buf, size_t nbyte){
             if (write_count == (int)nbyte || write_count == strlen(src)) {
                 block_write(block_index, block);
                 fd_table[fildes].offset += write_count;
-                if(size < fd_table[fildes].offset){
+                if(size < fd_table[fildes].offset){ /* extend to hold the additional bytes */
                     file->size = fd_table[fildes].offset;
                 }
                 return write_count;
@@ -394,7 +407,7 @@ int fs_write(int fildes, void *buf, size_t nbyte){
 
     fd_table[fildes].offset += write_count;
     if(size < fd_table[fildes].offset){
-        file->size = fd_table[fildes].offset;
+        file->size = fd_table[fildes].offset; /* extend to hold the additional bytes */
     }
     return write_count;
 }
@@ -472,8 +485,7 @@ int fs_truncate(int fildes, off_t length)
     return 0;
 }
 
-char find_file(char* name)
-{
+char find_file(char* name){
     char i;
 
     for(i = 0; i < MAX_FILE; i++) {
@@ -485,9 +497,7 @@ char find_file(char* name)
     return -1;         // file not found
 }
 
-int find_free_file_des(char file_index)
-{
-
+int find_free_file_des(char file_index){
     /*
         Description: Returns the first file descriptor that is not being used
     */
@@ -727,6 +737,5 @@ int main(){
     if(umount_fs(disk_name) < 0) {
         fprintf(stderr, "umount_fs()\t error.\n");
     }
-
     return 0;
-};
+}
